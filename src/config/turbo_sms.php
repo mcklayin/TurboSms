@@ -4,25 +4,30 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Path to directory with themes
+    | URL
     |--------------------------------------------------------------------------
     |
-    | The directory with your themes.
+    | URL for the SOAP API
     |
     */
 
-        'path'         => base_path('resources/themes'),
+        'url'      => 'http://turbosms.in.ua/api/wsdl.html',
     /*
     |--------------------------------------------------------------------------
-    | Path to directory with assets
+    | Credentials for auth
     |--------------------------------------------------------------------------
-    |
-    | The directory with assets.
-    |
     */
 
-        'assets_path'  => 'assets/themes',
+        'login'    => null,
+        'password' => null,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Sender name
+    |--------------------------------------------------------------------------
+    */
+
+        'sender'   => null,
 
 
 );
