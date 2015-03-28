@@ -37,6 +37,40 @@ class TurboSms
 
     }
 
+    /**
+     * Отправка одного сообщения
+     *
+     * Хоть массовая отправка и поддерживается АПИ
+     * Мы ее реализовывать не будем в основном из-за неудобного получения статуса и ИД каждого сообщения
+     *
+     *
+     * @param $text - текст сообщения
+     * @param $phone - номер телефона получателя
+     * @return string - код сообщения у провайдера
+     *
+     * @throws TurboSmsException
+     */
+    public function send($text, $phone)
+    {
+
+        $result = $this->client->SendSMS(
+                [
+                        'sender'      => $this->sender,
+                        'destination' => $phone,
+                        'text'        => $text
+                ]
+        );
+
+        if ($result->SendSMSResult->ResultArray[0] != 'Сообщения успешно отправлены') {
+            throw new TurboSmsException($result->SendSMSResult->ResultArray[0]);
+        }
+
+        // надеемся, что в ответе приходит
+        return $result->SendSMSResult->ResultArray[1];
+    }
+
+
+
 
     /**
      * Получение остатка кредитов
