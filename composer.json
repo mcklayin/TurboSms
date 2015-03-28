@@ -1,6 +1,7 @@
 {
     "name": "newway/turbo-sms",
-    "description": "Package for Turbo SMS service(http://turbosms.ua/)",
+    "description": "Package for TurboSMS service(http://turbosms.ua/)",
+    "keywords": ["sms", "laravel", "TurboSMS", "text messages", "send"],
     "authors": [
         {
             "name": "Bilyk Andrey",
