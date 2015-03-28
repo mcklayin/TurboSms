@@ -1,14 +1,19 @@
 <?php namespace Newway\TurboSms;
 
 
-class ServiceProvider extends \Illuminate\Support\ServiceProvider {
+/**
+ * Class ServiceProvider
+ * @package Newway\TurboSms
+ */
+class ServiceProvider extends \Illuminate\Support\ServiceProvider
+{
 
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = false;
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
 
     /**
      * Bootstrap the application events.
@@ -17,40 +22,54 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
      */
     public function boot()
     {
-        $this->publishes([
-            __DIR__.'/../config/config.php' => config_path('turbo_sms.php'),
-        ], 'config');
+
+        $this->publishes(
+                [
+                        __DIR__ . '/../config/config.php' => config_path('turbo_sms.php'),
+                ],
+                'config'
+        );
     }
 
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-		// init theme with default finder
-        $this->app['turbo_sms'] = $this->app->share(function($app) {
-            $sms = new TurboSms($app);
-            return $sms;
-        });
-
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
 
         // merge & publihs config
         $configPath = __DIR__ . '/../config/config.php';
         $this->mergeConfigFrom($configPath, 'turbo_sms');
         $this->publishes([$configPath => config_path('turbo_sms.php')]);
 
-	}
 
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return [];
-	}
+        // init theme with default finder
+        $this->app['turbo_sms'] = $this->app->share(
+                function ($app) {
+
+                    $login = $app['config']->get('turbo_sms.auth.login');
+                    $password = $app['config']->get('turbo_sms.auth.password');
+                    $sender = $app['config']->get('turbo_sms.sender');
+                    $url = $this->app['config']->get('turbo_sms.url', 'http://turbosms.in.ua/api/wsdl.html');
+
+                    return new TurboSms($login, $password, $sender, $url);
+                }
+        );
+
+
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+
+        return [];
+    }
 
 }

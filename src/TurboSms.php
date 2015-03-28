@@ -20,20 +20,26 @@ class TurboSms
     protected $app;
 
     /**
-     * Build a new Theme manager
-     *
-     * @param Container $app
+     * Build a new TurboSms client
+     * @param $login
+     * @param $password
+     * @param null $sender
+     * @param string $url
+     * @throws TurboSmsException
      */
-    public function __construct(Container $app)
+    public function __construct($login, $password, $sender, $url = 'http://turbosms.in.ua/api/wsdl.html')
     {
 
-        $this->app = $app;
+        $this->credentials = [
+                'login'    => $login,
+                'password' => $password,
+        ];
 
-        header ('Content-type: text/html; charset=utf-8');
+        $this->sender = $sender;
+
+        $this->url = $url;
 
         $this->client = $this->_getClient();
-
-        $this->sender = $this->app['config']->get('turbo_sms.sender');
 
     }
 
@@ -70,8 +76,6 @@ class TurboSms
     }
 
 
-
-
     /**
      * Получение остатка кредитов
      *
@@ -87,7 +91,7 @@ class TurboSms
         // в саппорте говорят, что баланс в кредитах может быть дробным (о_О)
         // будем оперировать целым остатком.
 
-        if (isset($result->GetCreditBalanceResult)){
+        if (isset($result->GetCreditBalanceResult)) {
             return intval($result->GetCreditBalanceResult);
         }
 
@@ -110,13 +114,12 @@ class TurboSms
         // ответ на статус - строка.
         // т.е. чтоб реально узнать статус сообщение саппорт предлагает парсить строку и анализировать ее
 
-        if (isset($result->GetMessageStatusResult)){
+        if (isset($result->GetMessageStatusResult)) {
             return $result->GetMessageStatusResult;
         }
 
         throw new TurboSmsException('Cannot get message status');
     }
-
 
 
     /**
@@ -125,21 +128,17 @@ class TurboSms
      * @return SoapClient
      * @throws TurboSmsException
      */
-    private function _getClient() {
+    private function _getClient()
+    {
 
-        $url = $this->app['config']->get('turbo_sms.url', 'http://turbosms.in.ua/api/wsdl.html');
+        $client = new SoapClient ($this->url);
 
-        $client = new SoapClient ($url);
-
-        // Данные авторизации
-        $credentials = $this->app['config']->get('turbo_sms.auth', []);
-
-        if (empty($credentials['login']) || empty($credentials['password'])) {
+        if (empty($this->credentials['login']) || empty($this->credentials['password'])) {
             throw new TurboSmsException('Enter login and password from Turbosms');
         }
 
         // Авторизируемся на сервере
-        $result = $client->Auth($credentials);
+        $result = $client->Auth($this->credentials);
 
         // @todo - может как-то адекватно статус отдавать и соотв. проверять его?
         if (0 && $result->AuthResultCode != 0) {
@@ -149,18 +148,12 @@ class TurboSms
         // Пока будем проверять так
         // Надеюсь тех. специалисты прислушаются и доделают АПИ
         if ($result->AuthResult . '' != 'Вы успешно авторизировались') {
-           throw new TurboSmsException($result->AuthResult);
+            throw new TurboSmsException($result->AuthResult);
         }
 
         return $client;
 
     }
-
-
-
-
-
-
 
 
 }
