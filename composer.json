@@ -9,18 +9,6 @@
             "email": "yaapis@gmail.com"
         }
     ],
-    "repositories": [{
-    "type": "package",
-    "package": {
-        "name": "newway/turbo-sms,
-        "version": "0.2.0",
-        "source": {
-                "url": "git@github.com:mcklayin/TurboSms.git",
-            "type": "git",
-        "reference": "0.2.0"
-        }
-        }
-    }],
     "require": {
         "php": ">=5.4.0",
         "illuminate/support": "5.1.*"
