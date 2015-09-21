@@ -1,4 +1,4 @@
-# Package for [TurboSMS] (http://turbosms.ua/) for Laravel 5
+# Package for [TurboSMS] (http://turbosms.ua/) for Laravel 5.1
 This package still in beta.
 The main problem - SOAP API from TurboSMS (be realists - it's awful).
 I've contact with TurboSMS's support - lets see what they will do with my request...
@@ -14,7 +14,7 @@ Require this package in your composer.json:
 And add the ServiceProvider to the providers array in config/app.php
 
 ~~~php
-'Newway\TurboSms\ServiceProvider',
+Newway\TurboSms\ServiceProvider::class,
 ~~~
 
 Publish config using artisan CLI (if you want to overwrite default config).
@@ -27,7 +27,7 @@ You can register the facade in the `aliases` key of your `config/app.php` file.
 
 ~~~php
 'aliases' => array(
-    'TurboSms'  => 'Newway\TurboSms\Facade',
+   'TurboSms'  => Newway\TurboSms\Facade::class,
 )
 ~~~
 
